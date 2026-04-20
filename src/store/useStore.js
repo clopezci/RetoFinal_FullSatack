@@ -1,46 +1,58 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-export const useStore = create((set) => ({
-    // Productos
-    products: [],
-    setProducts: (products) => set({ products }),
+export const useStore = create(
+    persist(
+        (set) => ({
+            // Productos
+            products: [],
+            setProducts: (products) => set({ products }),
 
-    // Carrito
-    cart: [],
-    addToCart: (product) => set((state) => {
-        const existingItem = state.cart.find(item => item.id === product.id);
-        if (existingItem) {
-            return {
+            // Carrito
+            cart: [],
+            addToCart: (product) => set((state) => {
+                const existingItem = state.cart.find(item => item.id === product.id);
+                if (existingItem) {
+                    return {
+                        cart: state.cart.map(item =>
+                            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                        )
+                    };
+                }
+                return { cart: [...state.cart, { ...product, quantity: 1 }] };
+            }),
+
+            removeFromCart: (productId) => set((state) => ({
+                cart: state.cart.filter(item => item.id !== productId)
+            })),
+
+            updateQuantity: (productId, quantity) => set((state) => ({
                 cart: state.cart.map(item =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                )
-            };
+                    item.id === productId ? { ...item, quantity } : item
+                ).filter(item => item.quantity > 0)
+            })),
+
+            clearCart: () => set({ cart: [] }),
+
+            // Usuario
+            user: null,
+            setUser: (user) => set({ user }),
+
+            // Búsqueda
+            searchTerm: '',
+            setSearchTerm: (term) => set({ searchTerm: term }),
+
+            // Paginación
+            currentPage: 1,
+            itemsPerPage: 12,
+            setCurrentPage: (page) => set({ currentPage: page }),
+        }),
+        {
+            name: 'eshop-storage',
+            partialize: (state) => ({
+                cart: state.cart,
+                user: state.user,
+            }),
         }
-        return { cart: [...state.cart, { ...product, quantity: 1 }] };
-    }),
-
-    removeFromCart: (productId) => set((state) => ({
-        cart: state.cart.filter(item => item.id !== productId)
-    })),
-
-    updateQuantity: (productId, quantity) => set((state) => ({
-        cart: state.cart.map(item =>
-            item.id === productId ? { ...item, quantity } : item
-        ).filter(item => item.quantity > 0)
-    })),
-
-    clearCart: () => set({ cart: [] }),
-
-    // Usuario
-    user: null,
-    setUser: (user) => set({ user }),
-
-    // Búsqueda
-    searchTerm: '',
-    setSearchTerm: (term) => set({ searchTerm: term }),
-
-    // Paginación
-    currentPage: 1,
-    itemsPerPage: 12,
-    setCurrentPage: (page) => set({ currentPage: page }),
-}));
+    )
+);
