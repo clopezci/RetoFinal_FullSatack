@@ -4,7 +4,7 @@ export const mockProducts = [
     title: 'Classic Cotton T-Shirt',
     price: 19.99,
     category: 'clothing',
-    image: 'https://via.placeholder.com/300x300?text=T-Shirt',
+    image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
     rating: { rate: 4.3, count: 120 },
   },
   {
@@ -12,7 +12,7 @@ export const mockProducts = [
     title: 'Slim Fit Jeans',
     price: 39.99,
     category: 'clothing',
-    image: 'https://via.placeholder.com/300x300?text=Jeans',
+    image: 'https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg',
     rating: { rate: 4.1, count: 89 },
   },
   {
@@ -20,7 +20,7 @@ export const mockProducts = [
     title: 'Running Sneakers',
     price: 64.5,
     category: 'footwear',
-    image: 'https://via.placeholder.com/300x300?text=Sneakers',
+    image: 'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg',
     rating: { rate: 4.6, count: 210 },
   },
   {
@@ -28,7 +28,7 @@ export const mockProducts = [
     title: 'Leather Wallet',
     price: 24.0,
     category: 'accessories',
-    image: 'https://via.placeholder.com/300x300?text=Wallet',
+    image: 'https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg',
     rating: { rate: 4.2, count: 54 },
   },
   {
@@ -36,7 +36,7 @@ export const mockProducts = [
     title: 'Wireless Headphones',
     price: 89.99,
     category: 'electronics',
-    image: 'https://via.placeholder.com/300x300?text=Headphones',
+    image: 'https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_.jpg',
     rating: { rate: 4.7, count: 310 },
   },
   {
@@ -44,7 +44,7 @@ export const mockProducts = [
     title: 'Bluetooth Speaker',
     price: 49.99,
     category: 'electronics',
-    image: 'https://via.placeholder.com/300x300?text=Speaker',
+    image: 'https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg',
     rating: { rate: 4.5, count: 178 },
   },
   {
@@ -52,7 +52,7 @@ export const mockProducts = [
     title: 'Office Backpack',
     price: 44.9,
     category: 'bags',
-    image: 'https://via.placeholder.com/300x300?text=Backpack',
+    image: 'https://fakestoreapi.com/img/81QpkIctqPL._AC_SX679_.jpg',
     rating: { rate: 4.4, count: 132 },
   },
   {
@@ -60,7 +60,7 @@ export const mockProducts = [
     title: 'Travel Duffel Bag',
     price: 59.9,
     category: 'bags',
-    image: 'https://via.placeholder.com/300x300?text=Duffel+Bag',
+    image: 'https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg',
     rating: { rate: 4.0, count: 76 },
   },
   {
@@ -68,7 +68,7 @@ export const mockProducts = [
     title: 'Smart Watch',
     price: 129.99,
     category: 'electronics',
-    image: 'https://via.placeholder.com/300x300?text=Smart+Watch',
+    image: 'https://fakestoreapi.com/img/51Y5NI-I5jL._AC_UX679_.jpg',
     rating: { rate: 4.3, count: 160 },
   },
   {
@@ -76,7 +76,7 @@ export const mockProducts = [
     title: 'Polarized Sunglasses',
     price: 34.25,
     category: 'accessories',
-    image: 'https://via.placeholder.com/300x300?text=Sunglasses',
+    image: 'https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_.jpg',
     rating: { rate: 4.1, count: 64 },
   },
   {
@@ -84,7 +84,7 @@ export const mockProducts = [
     title: 'Minimal Desk Lamp',
     price: 27.5,
     category: 'home',
-    image: 'https://via.placeholder.com/300x300?text=Desk+Lamp',
+    image: 'https://fakestoreapi.com/img/71HblAHs5xL._AC_UY879_-2.jpg',
     rating: { rate: 4.2, count: 98 },
   },
   {
@@ -92,7 +92,7 @@ export const mockProducts = [
     title: 'Ceramic Coffee Mug',
     price: 12.99,
     category: 'home',
-    image: 'https://via.placeholder.com/300x300?text=Coffee+Mug',
+    image: 'https://fakestoreapi.com/img/71kWymZ+c+L._AC_SX679_.jpg',
     rating: { rate: 4.0, count: 143 },
   },
   {
@@ -100,7 +100,7 @@ export const mockProducts = [
     title: 'Yoga Mat Pro',
     price: 29.9,
     category: 'sports',
-    image: 'https://via.placeholder.com/300x300?text=Yoga+Mat',
+    image: 'https://fakestoreapi.com/img/61mtL65D4cL._AC_SX679_.jpg',
     rating: { rate: 4.5, count: 111 },
   },
   {
@@ -108,7 +108,7 @@ export const mockProducts = [
     title: 'Stainless Water Bottle',
     price: 18.75,
     category: 'sports',
-    image: 'https://via.placeholder.com/300x300?text=Water+Bottle',
+    image: 'https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_.jpg',
     rating: { rate: 4.6, count: 201 },
   },
   {
@@ -116,7 +116,7 @@ export const mockProducts = [
     title: 'Gaming Mouse',
     price: 45.99,
     category: 'electronics',
-    image: 'https://via.placeholder.com/300x300?text=Gaming+Mouse',
+    image: 'https://fakestoreapi.com/img/61xWwQxQxkL._AC_SX679_.jpg',
     rating: { rate: 4.4, count: 187 },
   },
   {
@@ -124,7 +124,7 @@ export const mockProducts = [
     title: 'Mechanical Keyboard',
     price: 79.0,
     category: 'electronics',
-    image: 'https://via.placeholder.com/300x300?text=Keyboard',
+    image: 'https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_.jpg',
     rating: { rate: 4.8, count: 224 },
   },
 ];
