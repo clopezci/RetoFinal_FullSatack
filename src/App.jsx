@@ -1,7 +1,9 @@
 import './App.css';
 import { useState } from 'react';
 import { useStore } from './store/useStore';
-import { ProductGallery } from './components/ProductGallery/ProductGallery';
+import { ProductGallery } from './components/organisms/ProductGallery';
+import { Header } from './components/organisms/Header';
+import { Footer } from './components/organisms/Footer';
 
 function CartItem({ item, onRemove, onQuantityChange }) {
   return (
@@ -59,27 +61,12 @@ export default function App() {
 
   return (
     <div className="relative">
-      <header className="flex justify-between items-center gap-3 px-4 py-4 border-b bg-white sticky top-0 z-40">
-        <h1 className="text-2xl font-bold">🛍️ E-Shop</h1>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-          placeholder="Buscar productos..."
-          className="border rounded px-3 py-2 w-64 max-w-full"
-        />
-        <button
-          onClick={() => setIsCartOpen(!isCartOpen)}
-          className="relative text-2xl hover:scale-110 transition"
-        >
-          🛒
-          {cart.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              {cart.length}
-            </span>
-          )}
-        </button>
-      </header>
+      <Header
+        searchTerm={searchTerm}
+        onSearchChange={(event) => setSearchTerm(event.target.value)}
+        cartCount={cart.length}
+        onCartToggle={() => setIsCartOpen(!isCartOpen)}
+      />
 
       <main>
         <ProductGallery />
@@ -121,6 +108,7 @@ export default function App() {
           )}
         </div>
       </Drawer>
+      <Footer />
     </div>
   );
 }
