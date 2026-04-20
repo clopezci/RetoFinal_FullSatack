@@ -3,7 +3,7 @@ import { useStore } from '../../store/useStore';
 import { apiService } from '../../services/api';
 
 export function ProductGallery() {
-    const { products, setProducts, addToCart } = useStore();
+    const { products, setProducts, addToCart, searchTerm } = useStore();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -21,9 +21,25 @@ export function ProductGallery() {
         return <div className="text-center py-8">Cargando productos...</div>;
     }
 
+    const filteredProducts = products.filter((product) => {
+        const normalizedSearchTerm = searchTerm.toLowerCase().trim();
+        if (!normalizedSearchTerm) {
+            return true;
+        }
+
+        return (
+            product.title.toLowerCase().includes(normalizedSearchTerm)
+            || product.category?.toLowerCase().includes(normalizedSearchTerm)
+        );
+    });
+
+    if (filteredProducts.length === 0) {
+        return <div className="text-center py-8">No se encontraron productos.</div>;
+    }
+
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 p-4">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
                 <div key={product.id} className="border rounded-lg p-4 hover:shadow-lg transition">
                     <div className="bg-gray-200 h-48 rounded mb-2 flex items-center justify-center overflow-hidden">
                         <img src={product.image} alt={product.title} className="h-full object-contain" />

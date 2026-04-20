@@ -53,14 +53,21 @@ function Drawer({ isOpen, children }) {
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const { cart, removeFromCart, updateQuantity, clearCart } = useStore();
+  const { cart, removeFromCart, updateQuantity, clearCart, searchTerm, setSearchTerm } = useStore();
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
 
   return (
     <div className="relative">
-      <header className="flex justify-between items-center px-4 py-4 border-b bg-white sticky top-0 z-40">
+      <header className="flex justify-between items-center gap-3 px-4 py-4 border-b bg-white sticky top-0 z-40">
         <h1 className="text-2xl font-bold">🛍️ E-Shop</h1>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          placeholder="Buscar productos..."
+          className="border rounded px-3 py-2 w-64 max-w-full"
+        />
         <button
           onClick={() => setIsCartOpen(!isCartOpen)}
           className="relative text-2xl hover:scale-110 transition"
