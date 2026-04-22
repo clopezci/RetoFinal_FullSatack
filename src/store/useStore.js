@@ -104,11 +104,10 @@ export const useStore = create(
             setCurrentPage: (page) => set({ currentPage: page }),
         }),
         {
-            // v2: al activar Firebase Auth no se persiste `user` en localStorage
-            name: 'eshop-storage-v2',
+            // v3: limpia caché previa; con Firebase nunca rehidratar `user` mock
+            name: 'eshop-storage-v3',
             partialize: (state) => {
                 if (isFirebaseConfigured()) {
-                    // Sesión: Firebase Auth. Solo persistir carrito.
                     return { cart: state.cart };
                 }
                 return {
@@ -116,6 +115,15 @@ export const useStore = create(
                     user: state.user,
                     users: state.users,
                 };
+            },
+            merge: (persisted, current) => {
+                if (!persisted) {
+                    return current;
+                }
+                if (!isFirebaseConfigured()) {
+                    return { ...current, ...persisted };
+                }
+                return { ...current, ...persisted, user: null };
             },
         }
     )
