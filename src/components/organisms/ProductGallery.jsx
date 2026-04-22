@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { mockProducts } from '../../mockdata/products';
+import { apiService } from '../../services/api';
 import { ProductCard } from '../molecules/ProductCard';
 import { Button } from '../atoms/Button';
 
@@ -14,10 +14,27 @@ export function ProductGallery() {
     itemsPerPage,
     setCurrentPage,
   } = useStore();
+  const [loadError, setLoadError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadProducts = useCallback(async () => {
+    setIsLoading(true);
+    setLoadError(null);
+    try {
+      const data = await apiService.getProducts();
+      setProducts(data);
+    } catch (error) {
+      console.error(error);
+      setLoadError('No se pudieron cargar los productos. Revisa tu conexión e inténtalo de nuevo.');
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setProducts]);
 
   useEffect(() => {
-    setProducts(mockProducts);
-  }, [setProducts]);
+    loadProducts();
+  }, [loadProducts]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -29,9 +46,28 @@ export function ProductGallery() {
 
     return (
       product.title.toLowerCase().includes(normalizedSearchTerm) ||
-      product.category.toLowerCase().includes(normalizedSearchTerm)
+      (product.category?.toLowerCase() ?? '').includes(normalizedSearchTerm)
     );
   });
+
+  if (isLoading) {
+    return <div className="py-12 text-center text-gray-600">Cargando productos...</div>;
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex flex-col items-center gap-4 px-4 py-12 text-center">
+        <p className="text-gray-700">{loadError}</p>
+        <Button
+          type="button"
+          onClick={loadProducts}
+          className="border border-blue-600 bg-white text-blue-600 hover:bg-blue-50"
+        >
+          Reintentar
+        </Button>
+      </div>
+    );
+  }
 
   if (filteredProducts.length === 0) {
     return <div className="text-center py-8">No se encontraron productos.</div>;

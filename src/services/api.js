@@ -1,47 +1,44 @@
-const API_BASE = 'https://fakestoreapi.com';
+import { API_BASE_URL } from '../utils/constants';
+
+async function handleJsonResponse(response) {
+    if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+    }
+    return response.json();
+}
 
 export const apiService = {
-    // Obtener todos los productos
+    // Fake Store API: https://fakestoreapi.com/docs
+    // GET /products
     getProducts: async () => {
-        try {
-            const response = await fetch(`${API_BASE}/products`);
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching products:', error);
-            return [];
+        const response = await fetch(`${API_BASE_URL}/products`);
+        const data = await handleJsonResponse(response);
+        if (!Array.isArray(data)) {
+            throw new Error('Respuesta inválida: se esperaba un listado de productos.');
         }
+        return data;
     },
 
-    // Obtener un producto por ID
+    // GET /products/:id
     getProductById: async (id) => {
-        try {
-            const response = await fetch(`${API_BASE}/products/${id}`);
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching product:', error);
-            return null;
-        }
+        const response = await fetch(`${API_BASE_URL}/products/${id}`);
+        return handleJsonResponse(response);
     },
 
-    // Obtener categorías
+    // GET /products/categories
     getCategories: async () => {
-        try {
-            const response = await fetch(`${API_BASE}/products/categories`);
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-            return [];
-        }
+        const response = await fetch(`${API_BASE_URL}/products/categories`);
+        const data = await handleJsonResponse(response);
+        return Array.isArray(data) ? data : [];
     },
 
-    // Obtener productos por categoría
+    // GET /products/category/:category
     getProductsByCategory: async (category) => {
-        try {
-            const response = await fetch(`${API_BASE}/products/category/${category}`);
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching products by category:', error);
-            return [];
-        }
+        const encodedCategory = encodeURIComponent(category);
+        const response = await fetch(
+            `${API_BASE_URL}/products/category/${encodedCategory}`,
+        );
+        const data = await handleJsonResponse(response);
+        return Array.isArray(data) ? data : [];
     },
 };
