@@ -1,9 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { mockUsers } from '../mockdata/users';
 
 export const useStore = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             // Productos
             products: [],
             setProducts: (products) => set({ products }),
@@ -37,6 +38,60 @@ export const useStore = create(
             // Usuario
             user: null,
             setUser: (user) => set({ user }),
+            users: mockUsers,
+            login: (email, password) => {
+                const state = get();
+                const normalizedEmail = email.trim().toLowerCase();
+                const account = state.users.find(
+                    (candidate) =>
+                        candidate.email.toLowerCase() === normalizedEmail
+                        && candidate.password === password
+                );
+
+                if (!account) {
+                    return false;
+                }
+
+                const safeUser = {
+                    id: account.id,
+                    name: account.name,
+                    email: account.email,
+                };
+                set({ user: safeUser });
+                return true;
+            },
+            registerUser: ({ name, email, password }) => {
+                const state = get();
+                const normalizedEmail = email.trim().toLowerCase();
+                const alreadyExists = state.users.some(
+                    (candidate) => candidate.email.toLowerCase() === normalizedEmail
+                );
+
+                if (alreadyExists) {
+                    return false;
+                }
+
+                const newUser = {
+                    id: state.users.length + 1,
+                    name: name.trim(),
+                    email: normalizedEmail,
+                    password,
+                };
+
+                const safeUser = {
+                    id: newUser.id,
+                    name: newUser.name,
+                    email: newUser.email,
+                };
+
+                set({
+                    users: [...state.users, newUser],
+                    user: safeUser,
+                });
+
+                return true;
+            },
+            logout: () => set({ user: null }),
 
             // Búsqueda
             searchTerm: '',
@@ -52,6 +107,7 @@ export const useStore = create(
             partialize: (state) => ({
                 cart: state.cart,
                 user: state.user,
+                users: state.users,
             }),
         }
     )

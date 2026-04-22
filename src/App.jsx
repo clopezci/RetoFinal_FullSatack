@@ -53,11 +53,134 @@ function Drawer({ isOpen, children }) {
   );
 }
 
+function AuthModal({ isOpen, onClose, onSubmit, mode, setMode, errorMessage }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  if (!isOpen) {
+    return null;
+  }
+
+  const isRegisterMode = mode === 'register';
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit({
+      name,
+      email,
+      password,
+      mode,
+      onSuccess: () => {
+        setName('');
+        setEmail('');
+        setPassword('');
+      },
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg w-full max-w-md p-4">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-bold text-lg">
+            {isRegisterMode ? 'Crear cuenta' : 'Iniciar sesión'}
+          </h2>
+          <button onClick={onClose} className="text-gray-600 hover:text-black">✕</button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {isRegisterMode && (
+            <input
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              className="w-full border rounded px-3 py-2"
+              placeholder="Nombre completo"
+              required
+            />
+          )}
+
+          <input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            className="w-full border rounded px-3 py-2"
+            placeholder="Correo"
+            required
+          />
+
+          <input
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            className="w-full border rounded px-3 py-2"
+            placeholder="Contraseña"
+            required
+          />
+
+          {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
+
+          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+            {isRegisterMode ? 'Registrarme' : 'Entrar'}
+          </button>
+        </form>
+
+        <div className="mt-3 text-sm text-center">
+          {isRegisterMode ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
+          <button
+            onClick={() => setMode(isRegisterMode ? 'login' : 'register')}
+            className="text-blue-600 hover:underline"
+          >
+            {isRegisterMode ? 'Iniciar sesión' : 'Registrarme'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const { cart, removeFromCart, updateQuantity, clearCart, searchTerm, setSearchTerm } = useStore();
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+  const [authError, setAuthError] = useState('');
+  const {
+    cart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    searchTerm,
+    setSearchTerm,
+    user,
+    login,
+    registerUser,
+    logout,
+  } = useStore();
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+
+  const handleAuthSubmit = ({ name, email, password, mode, onSuccess }) => {
+    let success = false;
+
+    if (mode === 'login') {
+      success = login(email, password);
+      if (!success) {
+        setAuthError('Credenciales inválidas.');
+        return;
+      }
+    } else {
+      success = registerUser({ name, email, password });
+      if (!success) {
+        setAuthError('Ese correo ya está registrado.');
+        return;
+      }
+    }
+
+    onSuccess();
+    setAuthError('');
+    setIsAuthOpen(false);
+  };
 
   return (
     <div className="relative">
@@ -66,6 +189,13 @@ export default function App() {
         onSearchChange={(event) => setSearchTerm(event.target.value)}
         cartCount={cart.length}
         onCartToggle={() => setIsCartOpen(!isCartOpen)}
+        user={user}
+        onAuthOpen={() => {
+          setAuthMode('login');
+          setAuthError('');
+          setIsAuthOpen(true);
+        }}
+        onLogout={logout}
       />
 
       <main>
@@ -108,6 +238,18 @@ export default function App() {
           )}
         </div>
       </Drawer>
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => {
+          setAuthError('');
+          setIsAuthOpen(false);
+        }}
+        onSubmit={handleAuthSubmit}
+        mode={authMode}
+        setMode={setAuthMode}
+        errorMessage={authError}
+      />
       <Footer />
     </div>
   );
