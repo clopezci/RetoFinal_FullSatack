@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { isFirebaseConfigured } from '../config/firebase';
 import { mockUsers } from '../mockdata/users';
 
 export const useStore = create(
@@ -103,12 +104,19 @@ export const useStore = create(
             setCurrentPage: (page) => set({ currentPage: page }),
         }),
         {
-            name: 'eshop-storage',
-            partialize: (state) => ({
-                cart: state.cart,
-                user: state.user,
-                users: state.users,
-            }),
+            // v2: al activar Firebase Auth no se persiste `user` en localStorage
+            name: 'eshop-storage-v2',
+            partialize: (state) => {
+                if (isFirebaseConfigured()) {
+                    // Sesión: Firebase Auth. Solo persistir carrito.
+                    return { cart: state.cart };
+                }
+                return {
+                    cart: state.cart,
+                    user: state.user,
+                    users: state.users,
+                };
+            },
         }
     )
 );

@@ -1,11 +1,20 @@
 import './App.css';
 import { useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
 import { useStore } from './store/useStore';
 import { ProductGallery } from './components/organisms/ProductGallery';
 import { Header } from './components/organisms/Header';
 import { Footer } from './components/organisms/Footer';
 import { CheckoutPreview } from './components/organisms/CheckoutPreview';
 import { MESSAGES } from './utils/constants';
+import { isFirebaseConfigured, getFirebaseAuth } from './config/firebase';
+import { saveOrderToFirestore } from './services/firebaseOrders';
+import {
+  firebaseRegisterWithEmail,
+  firebaseSignInWithEmail,
+  firebaseSignOut,
+  mapFirebaseAuthError,
+} from './utils/firebaseAuth';
 
 function CartItem({ item, onRemove, onQuantityChange }) {
   return (
@@ -162,6 +171,7 @@ export default function App() {
     login,
     registerUser,
     logout,
+    setUser,
   } = useStore();
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
@@ -172,9 +182,49 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [showCheckoutSuccess]);
 
-  const handleAuthSubmit = ({ name, email, password, mode, onSuccess }) => {
-    let success = false;
+  useEffect(() => {
+    if (!isFirebaseConfigured()) {
+      return;
+    }
+    const auth = getFirebaseAuth();
+    if (!auth) {
+      return;
+    }
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser({
+          id: firebaseUser.uid,
+          name:
+            firebaseUser.displayName
+            || firebaseUser.email?.split('@')[0]
+            || 'Usuario',
+          email: firebaseUser.email,
+        });
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, [setUser]);
 
+  const handleAuthSubmit = async ({ name, email, password, mode, onSuccess }) => {
+    if (isFirebaseConfigured() && getFirebaseAuth()) {
+      setAuthError('');
+      try {
+        if (mode === 'login') {
+          await firebaseSignInWithEmail({ email, password });
+        } else {
+          await firebaseRegisterWithEmail({ name, email, password });
+        }
+        onSuccess();
+        setIsAuthOpen(false);
+      } catch (error) {
+        setAuthError(mapFirebaseAuthError(error));
+      }
+      return;
+    }
+
+    let success = false;
     if (mode === 'login') {
       success = login(email, password);
       if (!success) {
@@ -188,13 +238,26 @@ export default function App() {
         return;
       }
     }
-
     onSuccess();
     setAuthError('');
     setIsAuthOpen(false);
   };
 
-  const handleConfirmPurchase = () => {
+  const handleLogout = async () => {
+    if (isFirebaseConfigured() && getFirebaseAuth()) {
+      await firebaseSignOut();
+    }
+    logout();
+  };
+
+  const handleConfirmPurchase = async () => {
+    if (isFirebaseConfigured() && user) {
+      try {
+        await saveOrderToFirestore({ cart, user, total: cartTotal });
+      } catch (error) {
+        console.error(error);
+      }
+    }
     clearCart();
     setIsCheckoutOpen(false);
     setIsCartOpen(false);
@@ -222,7 +285,7 @@ export default function App() {
           setAuthError('');
           setIsAuthOpen(true);
         }}
-        onLogout={logout}
+        onLogout={handleLogout}
       />
 
       <main className="mx-auto w-full max-w-7xl">
