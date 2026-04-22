@@ -31,7 +31,7 @@ Aplicación web de **e-commerce** con catálogo remoto, carrito, búsqueda, pagi
 ## Puesta en marcha
 
 ```bash
-git clone <url-de-tu-repositorio>
+git clone <url-de-tu-repositorio-en-GitHub>
 cd proyecto-final
 npm install
 npm run dev
@@ -71,10 +71,44 @@ Sin `.env` o con valores vacíos, la app funciona con **sesión y usuarios simul
 
 ## Despliegue
 
-- **Firebase Hosting:** `npm run deploy:firebase` (tras `firebase use` y proyecto configurado). Ajusta `.firebaserc` con el ID de tu proyecto.
-- **Vercel / Netlify:** en el repositorio hay `vercel.json` y `netlify.toml` de referencia. Define en el panel las variables `VITE_FIREBASE_*` si usas Firebase en producción, y el comando de build `npm run build` con publicación de `dist/`.
+### Producción (Vercel)
 
-Añade en Firebase *Authentication* → *Authorized domains* el dominio de producción (p. ej. `*.web.app`).
+La app está publicada en:
+
+**[https://reto-final-full-satack.vercel.app/](https://reto-final-full-satack.vercel.app/)**
+
+(Stack: Vite, build `npm run build`, salida `dist/`. Variables `VITE_FIREBASE_*` configuradas en el panel de Vercel; en Firebase *Authentication* → *Dominios autorizados* debe incluirse el dominio `*.vercel.app` del sitio.)
+
+### Otras opciones
+
+- **Firebase Hosting:** `npm run deploy:firebase` (tras `firebase use` y proyecto configurado; ver `.firebaserc`).
+- **Netlify:** en el repo hay `netlify.toml` de referencia; mismas variables `VITE_*` y `dist` como directorio de publicación.
+
+## Entregable final (taller) — checklist
+
+Criterios tomados de **[`instrucciones.md`](./instrucciones.md)**. Usalo para cerrar el reto antes de entregar al docente o subir a la plataforma del curso.
+
+| Requisito | Cómo comprobarlo |
+|-----------|------------------|
+| **Mín. 30 commits** con historial claro | `git log --oneline` (o en GitHub → *Insights* → *Network*). Si faltan, hacé commits pequeños y reales (docs, fixes, a11y) sin forzar ruido vacío. |
+| **API REST** (p. ej. Fake Store) | Galería carga productos vía `src/services/api.js`. |
+| **Registro / sesión** | Mock local sin `.env` o **Firebase Auth** con `.env` / Vercel. |
+| **Galería, búsqueda, paginación, carrito, checkout** | Probar en la URL pública y en local. |
+| **Diseño responsivo y atomic design** | Revisar móvil/tablet/desktop; carpetas `atoms` / `molecules` / `organisms`. |
+| **Deploy** | Enlace de producción arriba (Vercel). |
+| **Bonus Firebase** (si aplica) | Auth + Firestore (pedidos en colección `orders`); reglas publicadas. |
+
+**Pasos concretos para “entregar” el trabajo (sin depender del aula; ajustá según te pida el curso):**
+
+1. **Repo en GitHub** accesible (público o con invitación al docente) con el código al día (`git push`).
+2. **URL de despliegue** lista (la de Vercel) y comprobá login + compra en producción.
+3. **Completar 30+ commits** si el criterio del taller lo exige.
+4. **Entrega formal:** lo que pida la institución (LMS, formulario, PDF, enlace a repo + enlace a producción, etc.); en muchos cursos basta con **enlace al repo** + **enlace a Vercel** en un README o en la tarea.
+5. **(Opcional)** citar en el repo o en memoria **fuentes** si reutilizaste fragmentos (el taller lo indica en criterios de evaluación).
+
+## Documentación del taller
+
+La guía detallada (enunciado, funcionalidades, **paso a paso 1–15**, tips) está en **[`instrucciones.md`](./instrucciones.md)**.
 
 ## Estructura relevante
 
@@ -87,10 +121,6 @@ src/
   store/          # Zustand
   utils/
 ```
-
-## Documentación del taller
-
-La guía detallada del reto (enunciado, criterios, paso a paso y enlaces) está en **[`instrucciones.md`](./instrucciones.md)**.
 
 ## Licencia
 
