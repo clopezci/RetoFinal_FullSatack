@@ -160,6 +160,7 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [authError, setAuthError] = useState('');
+  const [purchaseError, setPurchaseError] = useState('');
   const {
     cart,
     removeFromCart,
@@ -251,11 +252,18 @@ export default function App() {
   };
 
   const handleConfirmPurchase = async () => {
-    if (isFirebaseConfigured() && user) {
+    setPurchaseError('');
+    if (isFirebaseConfigured() && getFirebaseAuth()?.currentUser) {
       try {
         await saveOrderToFirestore({ cart, user, total: cartTotal });
       } catch (error) {
+        const message
+          = error instanceof Error
+            ? error.message
+            : 'No se pudo guardar el pedido en Firestore.';
         console.error(error);
+        setPurchaseError(message);
+        return;
       }
     }
     clearCart();
@@ -335,10 +343,14 @@ export default function App() {
 
       <CheckoutPreview
         isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
+        onClose={() => {
+          setPurchaseError('');
+          setIsCheckoutOpen(false);
+        }}
         cart={cart}
         user={user}
         cartTotal={cartTotal}
+        purchaseError={purchaseError}
         onConfirmPurchase={handleConfirmPurchase}
       />
 

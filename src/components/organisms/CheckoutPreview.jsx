@@ -4,6 +4,7 @@ export function CheckoutPreview({
   cart,
   user,
   cartTotal,
+  purchaseError = '',
   onConfirmPurchase,
 }) {
   if (!isOpen) {
@@ -67,6 +68,12 @@ export function CheckoutPreview({
         <p className="text-xs text-gray-500 mb-4">
           Al confirmar, se vaciará el carrito. Esta es una vista previa del flujo de compra (simulación).
         </p>
+
+        {purchaseError && (
+          <p className="mb-4 text-sm text-red-600" role="alert">
+            {purchaseError}
+          </p>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-2">
           <button
