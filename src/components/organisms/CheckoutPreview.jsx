@@ -11,10 +11,10 @@ export function CheckoutPreview({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 shadow-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="font-bold text-xl">Revisar pedido</h2>
+    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
+      <div className="max-h-[min(100dvh,100vh)] w-full max-w-lg overflow-y-auto rounded-t-lg bg-white p-4 shadow-lg sm:rounded-lg sm:max-h-[90vh]">
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h2 className="text-lg font-bold sm:text-xl">Revisar pedido</h2>
           <button
             type="button"
             onClick={onClose}

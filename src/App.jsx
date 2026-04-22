@@ -48,7 +48,9 @@ function CartItem({ item, onRemove, onQuantityChange }) {
 function Drawer({ isOpen, children }) {
   return (
     <div
-      className={`${isOpen ? 'drawer-wrap-open' : ''} absolute drawer-wrap bg-white border-l border-sky-500 w-96 min-h-screen overflow-y-auto`}
+      className={`${
+        isOpen ? 'drawer-wrap-open' : ''
+      } drawer-wrap absolute w-full min-h-screen max-w-[100vw] overflow-y-auto border-l border-sky-500 bg-white sm:max-w-md sm:w-96`}
     >
       {children}
     </div>
@@ -82,8 +84,8 @@ function AuthModal({ isOpen, onClose, onSubmit, mode, setMode, errorMessage }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg w-full max-w-md p-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
+      <div className="w-full max-w-md rounded-t-lg bg-white p-4 sm:rounded-lg">
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-bold text-lg">
             {isRegisterMode ? 'Crear cuenta' : 'Iniciar sesión'}
@@ -203,7 +205,7 @@ export default function App() {
     <div className="relative">
       {showCheckoutSuccess && (
         <div
-          className="fixed top-0 left-0 right-0 z-[70] bg-green-600 text-white text-center py-2 text-sm shadow"
+          className="fixed top-0 left-0 right-0 z-[70] bg-green-600 px-2 py-2.5 text-center text-xs text-white shadow sm:text-sm"
           role="status"
         >
           {MESSAGES.CHECKOUT_SUCCESS}
@@ -223,7 +225,7 @@ export default function App() {
         onLogout={logout}
       />
 
-      <main>
+      <main className="mx-auto w-full max-w-7xl">
         <ProductGallery />
       </main>
 

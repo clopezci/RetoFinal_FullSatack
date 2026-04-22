@@ -10,46 +10,62 @@ export function Header({
   onLogout,
 }) {
   return (
-    <header className="flex justify-between items-center gap-3 px-4 py-4 border-b bg-white sticky top-0 z-40">
-      <h1 className="text-2xl font-bold">E-Shop</h1>
-      <Input
-        type="text"
-        value={searchTerm}
-        onChange={onSearchChange}
-        placeholder="Buscar productos..."
-        className="w-64 max-w-full"
-      />
-      <div className="flex items-center gap-2">
-        {user ? (
-          <>
-            <span className="text-sm text-gray-700 hidden md:inline">Hola, {user.name}</span>
+    <header className="sticky top-0 z-40 border-b bg-white">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-3 py-3 sm:px-4 sm:py-4 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
+        <div className="flex min-w-0 items-center justify-between gap-2 lg:contents">
+          <h1 className="shrink-0 text-xl font-bold sm:text-2xl">E-Shop</h1>
+
+          <div className="flex items-center gap-1.5 sm:gap-2 lg:order-3">
+            {user ? (
+              <>
+                <span className="max-w-[9rem] truncate text-sm text-gray-700 sm:max-w-none">
+                  <span className="hidden sm:inline">Hola, </span>
+                  {user.name}
+                </span>
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="shrink-0 rounded border px-2.5 py-1.5 text-sm hover:bg-gray-100 sm:px-3"
+                >
+                  Salir
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={onAuthOpen}
+                className="shrink-0 rounded border px-2.5 py-1.5 text-sm hover:bg-gray-100 sm:px-3"
+              >
+                Ingresar
+              </button>
+            )}
+
             <button
-              onClick={onLogout}
-              className="px-3 py-1 rounded border text-sm hover:bg-gray-100"
+              type="button"
+              onClick={onCartToggle}
+              className="relative shrink-0 text-2xl transition hover:scale-110"
+              aria-label="Abrir carrito"
             >
-              Salir
+              🛒
+              {cartCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                  {cartCount}
+                </span>
+              )}
             </button>
-          </>
-        ) : (
-          <button
-            onClick={onAuthOpen}
-            className="px-3 py-1 rounded border text-sm hover:bg-gray-100"
-          >
-            Ingresar
-          </button>
-        )}
+          </div>
+        </div>
+
+        <div className="min-w-0 flex-1 lg:order-2 lg:max-w-xl">
+          <Input
+            type="text"
+            value={searchTerm}
+            onChange={onSearchChange}
+            placeholder="Buscar productos..."
+            className="w-full"
+          />
+        </div>
       </div>
-      <button
-        onClick={onCartToggle}
-        className="relative text-2xl hover:scale-110 transition"
-      >
-        🛒
-        {cartCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-            {cartCount}
-          </span>
-        )}
-      </button>
     </header>
   );
 }
