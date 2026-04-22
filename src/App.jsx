@@ -1,9 +1,11 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useStore } from './store/useStore';
 import { ProductGallery } from './components/organisms/ProductGallery';
 import { Header } from './components/organisms/Header';
 import { Footer } from './components/organisms/Footer';
+import { CheckoutPreview } from './components/organisms/CheckoutPreview';
+import { MESSAGES } from './utils/constants';
 
 function CartItem({ item, onRemove, onQuantityChange }) {
   return (
@@ -142,6 +144,8 @@ function AuthModal({ isOpen, onClose, onSubmit, mode, setMode, errorMessage }) {
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [showCheckoutSuccess, setShowCheckoutSuccess] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [authError, setAuthError] = useState('');
@@ -159,6 +163,12 @@ export default function App() {
   } = useStore();
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+
+  useEffect(() => {
+    if (!showCheckoutSuccess) return;
+    const timer = setTimeout(() => setShowCheckoutSuccess(false), 4000);
+    return () => clearTimeout(timer);
+  }, [showCheckoutSuccess]);
 
   const handleAuthSubmit = ({ name, email, password, mode, onSuccess }) => {
     let success = false;
@@ -182,8 +192,23 @@ export default function App() {
     setIsAuthOpen(false);
   };
 
+  const handleConfirmPurchase = () => {
+    clearCart();
+    setIsCheckoutOpen(false);
+    setIsCartOpen(false);
+    setShowCheckoutSuccess(true);
+  };
+
   return (
     <div className="relative">
+      {showCheckoutSuccess && (
+        <div
+          className="fixed top-0 left-0 right-0 z-[70] bg-green-600 text-white text-center py-2 text-sm shadow"
+          role="status"
+        >
+          {MESSAGES.CHECKOUT_SUCCESS}
+        </div>
+      )}
       <Header
         searchTerm={searchTerm}
         onSearchChange={(event) => setSearchTerm(event.target.value)}
@@ -224,8 +249,12 @@ export default function App() {
                   <span className="font-bold text-lg">Total:</span>
                   <span className="font-bold text-lg">${cartTotal}</span>
                 </div>
-                <button className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded mb-2">
-                  Checkout
+                <button
+                  type="button"
+                  onClick={() => setIsCheckoutOpen(true)}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded mb-2"
+                >
+                  Ir al checkout
                 </button>
                 <button
                   onClick={clearCart}
@@ -238,6 +267,15 @@ export default function App() {
           )}
         </div>
       </Drawer>
+
+      <CheckoutPreview
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        cart={cart}
+        user={user}
+        cartTotal={cartTotal}
+        onConfirmPurchase={handleConfirmPurchase}
+      />
 
       <AuthModal
         isOpen={isAuthOpen}
